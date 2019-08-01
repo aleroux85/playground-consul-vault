@@ -1,0 +1,11 @@
+{
+    "connect": {
+        "ca_provider": "vault",
+        "ca_config": {
+            "address": "http://dc1-vault:8200",
+            "token": "s.ZD8GFRnBOCOiTqGp6EdZdGKa",
+            "root_pki_path": "pki",
+            "intermediate_pki_path": "pki_int"
+        }
+    }
+}

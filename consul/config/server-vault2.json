@@ -1,0 +1,12 @@
+{
+    "connect": {
+        "enabled": true,
+        "ca_provider": "vault",
+        "ca_config": {
+            "address": "http://dc2-vault:8200",
+            "token": "s.vLbEKWQK979Pk1TImFflZ2ur",
+            "root_pki_path": "pki",
+            "intermediate_pki_path": "pki_int"
+        }
+    }
+}

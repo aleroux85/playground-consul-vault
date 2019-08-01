@@ -1,0 +1,17 @@
+{
+	"client_addr": "0.0.0.0",
+    "data_dir": "/consul/data",
+    "check": {
+        "id": "api",
+        "name": "HTTP API on port 5000",
+        "http": "http://localhost:8090/hello",
+        "tls_skip_verify": true,
+        "method": "POST",
+        "header": {"x-foo":["bar", "baz"]},
+        "interval": "10s",
+        "timeout": "1s"
+    },
+    "service": {
+        "name": "hello"
+    }
+}

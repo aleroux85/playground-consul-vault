@@ -1,0 +1,85 @@
+version: "3.7"
+
+services:
+  dc1-vault:
+    build:
+      context: ./vault
+      dockerfile: Dockerfile
+    ports:
+      - 8200:8200
+    volumes:
+      - ./vault/config:/vault/config
+      - ./vault/policies:/vault/policies
+      - ./vault/data:/vault/data
+      - ./vault/logs:/vault/logs
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+    networks:
+      - dc1
+    command: vault server -config=/vault/config/vault-config.json
+    cap_add:
+      - IPC_LOCK
+
+  dc1-consul-client-1:
+    image: consul:1.5.2
+    volumes:
+      - "./consul/config/client.json:/config/client.json"
+    # network_mode: "host"
+    networks:
+      - dc1
+    command: "agent -retry-join dc1-consul-server-bootstrap -config-dir=/config"
+
+  dc1-consul-client-2:
+    image: consul:1.5.2
+    volumes:
+      - "./consul/config/client.json:/config/client.json"
+    # network_mode: "host"
+    networks:
+      - dc1
+    command: "agent -retry-join dc1-consul-server-bootstrap -config-dir=/config"
+
+  dc1-consul-server-bootstrap:
+    image: consul:1.5.2
+    # environment:
+    #   - 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}'
+    #   - CONSUL_BIND_INTERFACE=eth0
+    volumes:
+      - "./consul/config/server.json:/config/server.json"
+      - "./consul/config/server-vault1.json:/config/server-vault1.json"
+      # - "./consul/data:/consul/data"
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    # network_mode: "host"
+    networks:
+      - dc1
+    command: "agent -bootstrap-expect=1 -config-dir=/config"
+
+  dc1-consul-server-1:
+    image: consul:1.5.2
+    volumes:
+      - "./consul/config/server.json:/config/server.json"
+      - "./consul/config/server-vault1.json:/config/server-vault1.json"
+      # - "./consul/data:/consul/data"
+    # network_mode: "host"
+    networks:
+      - dc1
+    command: "agent -retry-join dc1-consul-server-bootstrap -config-dir=/config"
+
+  dc1-consul-server-2:
+    image: consul:1.5.2
+    volumes:
+      - "./consul/config/server.json:/config/server.json"
+      - "./consul/config/server-vault1.json:/config/server-vault1.json"
+      # - "./consul/data:/consul/data"
+    # network_mode: "host"
+    networks:
+      - dc1
+    command: "agent -retry-join dc1-consul-server-bootstrap -config-dir=/config"
+
+networks:
+  dc1:
+  dc2:
+  inter:
