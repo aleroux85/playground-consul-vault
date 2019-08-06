@@ -8,9 +8,18 @@ Built using https://testdriven.io/blog/managing-secrets-with-vault-and-consul
 
 `docker-compose up`
 
-Unseal Vault and install certs
+## Unseal Vault and install certs
 
-## Unseal and make certs
+Init, unseal and log into vault
+
+```
+vault operator init > vault_keys
+cat vault_keys
+
+vault operator unseal
+
+vault login
+```
 
 follow https://learn.hashicorp.com/vault/secrets-management/sm-pki-engine
 
@@ -56,4 +65,23 @@ vault write pki_int/roles/example-dot-com \
 vault write pki_int/issue/example-dot-com \
     common_name="test.example.com"\
     ttl="24h"
+```
+
+```
+curl http://127.0.0.1:8500/v1/connect/ca/configuration
+
+curl --request PUT \
+  --url http://127.0.0.1:8500/v1/connect/ca/configuration \
+  --header 'content-type: application/json' \
+  --data '{
+    "Provider": "vault",
+		"Config": {
+        "Address": "http://dc1-vault:8200",
+			"Token": "s.HQjq4iEGVcxgxU8I3QUobvF1",
+			"RootPkiPath": "pki",
+			"IntermediatePkiPath": "pki_int"
+    }
+}'
+
+curl http://127.0.0.1:8500/v1/connect/ca/roots
 ```

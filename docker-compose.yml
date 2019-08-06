@@ -45,7 +45,7 @@ services:
     #   - CONSUL_BIND_INTERFACE=eth0
     volumes:
       - "./consul/config/server.json:/config/server.json"
-      - "./consul/config/server-vault1.json:/config/server-vault1.json"
+      # - "./consul/config/server-secure.json:/config/server-secure.json"
       # - "./consul/data:/consul/data"
     ports:
       - "8400:8400"
@@ -61,8 +61,10 @@ services:
     image: consul:1.5.2
     volumes:
       - "./consul/config/server.json:/config/server.json"
-      - "./consul/config/server-vault1.json:/config/server-vault1.json"
+      # - "./consul/config/server-secure.json:/config/server-secure.json"
       # - "./consul/data:/consul/data"
+    ports:
+      - "8500:8510"
     # network_mode: "host"
     networks:
       - dc1
@@ -81,5 +83,5 @@ services:
 
 networks:
   dc1:
-  dc2:
-  inter:
+  # dc2:
+  # inter:
